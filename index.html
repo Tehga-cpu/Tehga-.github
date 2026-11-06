@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEHGA! - Teman Rasa, Teman Cerita</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#7A1C1C',
+                        brandRedDark: '#5C1313',
+                        brandYellow: '#E5A93C',
+                        brandYellowHover: '#D49014',
+                        brandCream: '#FDFBF7',
+                        brandCreamDark: '#F4EFE6',
+                        brandDark: '#2B2B2B',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FDFBF7;
+            color: #2B2B2B;
+        }
+
+        /* Pattern Background Custom */
+        .bg-pattern {
+            background-color: #FDFBF7;
+            background-image: radial-gradient(#7A1C1C 0.65px, transparent 0.65px), radial-gradient(#7A1C1C 0.65px, #FDFBF7 0.65px);
+            background-size: 26px 26px;
+            background-position: 0 0, 13px 13px;
+            background-opacity: 0.05;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFBF7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7A1C1C;
+            border-radius: 4px;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* CSS Geometric Illustrations */
+        .dimsum-art {
+            width: 140px;
+            height: 140px;
+            background: #E5A93C;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px -5px rgba(229, 169, 60, 0.4);
+        }
+        .dimsum-art::after {
+            content: "🥟";
+            font-size: 75px;
+        }
+
+        .drink-art {
+            width: 140px;
+            height: 140px;
+            background: #7A1C1C;
+            border-radius: 28px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px -5px rgba(122, 28, 28, 0.4);
+        }
+        .drink-art::after {
+            content: "🥤";
+            font-size: 75px;
+        }
+
+        .active-nav {
+            border-bottom: 3px solid #E5A93C;
+            color: #E5A93C !important;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brandYellow selection:text-brandDark">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-brandDark text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border-l-4 border-brandYellow">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-brandYellow text-xl"></i>
+        <span id="toast-message" class="font-medium text-sm">Notifikasi</span>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-brandRed text-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+                    <div class="w-10 h-10 bg-brandYellow rounded-xl flex items-center justify-center text-brandRed font-extrabold text-xl shadow-inner">
+                        T!
+                    </div>
+                    <div>
+                        <span class="text-2xl font-black tracking-wider text-brandCream">TEHGA!</span>
+                        <span class="block text-[10px] text-brandYellow font-medium tracking-widest -mt-1 uppercase">Dimsum & Tea</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-1 lg:space-x-2 font-medium text-sm">
+                    <button onclick="navigateTo('home')" id="nav-home" class="nav-btn px-4 py-2 rounded-lg transition hover:text-brandYellow">Beranda</button>
+                    <button onclick="navigateTo('menu')" id="nav-menu" class="nav-btn px-4 py-2 rounded-lg transition hover:text-brandYellow">Menu</button>
+                    <button onclick="navigateTo('promo')" id="nav-promo" class="nav-btn px-4 py-2 rounded-lg transition hover:text-brandYellow">Promo</button>
+                    <button onclick="navigateTo('about')" id="nav-about" class="nav-btn px-4 py-2 rounded-lg transition hover:text-brandYellow">Tentang</button>
+                    <button onclick="navigateTo('admin')" id="nav-admin" class="ml-4 bg-brandYellow hover:bg-brandYellowHover text-brandDark font-bold px-4 py-2 rounded-xl transition shadow-md flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-xs"></i> Kelola Admin
+                    </button>
+                </nav>
+
+                <!-- Mobile Hamburger Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-2xl p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandYellow text-brandCream">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-brandRedDark border-t border-red-900 px-4 pt-2 pb-6 space-y-2 text-center">
+            <button onclick="navigateTo('home')" class="block w-full py-2.5 rounded-lg text-brandCream hover:bg-brandRed font-medium">Beranda</button>
+            <button onclick="navigateTo('menu')" class="block w-full py-2.5 rounded-lg text-brandCream hover:bg-brandRed font-medium">Menu</button>
+            <button onclick="navigateTo('promo')" class="block w-full py-2.5 rounded-lg text-brandCream hover:bg-brandRed font-medium">Promo</button>
+            <button onclick="navigateTo('about')" class="block w-full py-2.5 rounded-lg text-brandCream hover:bg-brandRed font-medium">Tentang</button>
+            <button onclick="navigateTo('admin')" class="block w-full py-2.5 mt-2 bg-brandYellow text-brandDark font-bold rounded-xl shadow">Halaman Admin</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow">
+        
+        <!-- ==================== VIEW 1: BERANDA ==================== -->
+        <section id="view-home" class="page-view fade-in">
+            <!-- Hero Banner -->
+            <div class="relative bg-brandCream overflow-hidden py-16 sm:py-24 border-b border-yellow-900/10 bg-pattern">
+                <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-6 text-center md:text-left">
+                            <span class="inline-block bg-brandYellow/20 text-brandRed font-bold px-4 py-1.5 rounded-full text-xs tracking-wider uppercase border border-brandYellow/30">
+                                ✨ Minuman & Dimsum Kekinian
+                            </span>
+                            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-brandDark leading-tight">
+                                TEHGA! <br>
+                                <span class="text-brandRed">Teman Rasa,</span><br>
+                                <span class="text-brandYellow">Teman Cerita.</span>
+                            </h1>
+                            <p class="text-gray-600 text-base sm:text-lg leading-relaxed max-w-xl mx-auto md:mx-0">
+                                TEHGA! adalah UMKM yang menyediakan berbagai pilihan dimsum dan minuman dengan harga terjangkau dan rasa yang cocok untuk menemani aktivitas sehari-hari.
+                            </p>
+                            <div class="pt-2 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
+                                <button onclick="navigateTo('menu')" class="w-full sm:w-auto bg-brandYellow hover:bg-brandYellowHover text-brandDark font-extrabold px-8 py-4 rounded-2xl shadow-lg transition transform hover:-translate-y-1 flex items-center justify-center gap-3 text-lg">
+                                    <i class="fa-solid fa-utensils"></i> Lihat Menu Lengkap
+                                </button>
+                                <button onclick="navigateTo('promo')" class="w-full sm:w-auto bg-white hover:bg-gray-50 text-brandRed border-2 border-brandRed font-bold px-6 py-3.5 rounded-2xl transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-tag"></i> Cek Promo
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Aesthetic Geometric Art Section -->
+                        <div class="flex justify-center items-center gap-6 relative">
+                            <div class="dimsum-art transform -rotate-6 hover:rotate-0 transition duration-300"></div>
+                            <div class="drink-art transform rotate-6 hover:rotate-0 transition duration-300"></div>
+                            
+                            <!-- Floating Badge -->
+                            <div class="absolute -bottom-4 bg-white border-2 border-brandYellow px-5 py-2.5 rounded-2xl shadow-xl flex items-center gap-3">
+                                <span class="text-2xl">💰</span>
+                                <div>
+                                    <p class="text-xs text-gray-500 font-semibold">Harga Mulai</p>
+                                    <p class="text-sm font-extrabold text-brandRed">Rp 3.000 saja!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Highlights -->
+            <div class="py-16 bg-white">
+                <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="p-6 rounded-2xl bg-brandCream border border-yellow-900/10 text-center space-y-3">
+                            <div class="w-12 h-12 bg-brandRed/10 text-brandRed rounded-xl flex items-center justify-center text-2xl mx-auto font-bold">🥟</div>
+                            <h3 class="font-bold text-lg text-brandDark">Dimsum Enak & Lembut</h3>
+                            <p class="text-sm text-gray-600">Berbagai pilihan varian dimsum gurih lengkap dengan topping mozza dan saus spesial.</p>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-brandCream border border-yellow-900/10 text-center space-y-3">
+                            <div class="w-12 h-12 bg-brandYellow/20 text-brandYellowHover rounded-xl flex items-center justify-center text-2xl mx-auto font-bold">🥤</div>
+                            <h3 class="font-bold text-lg text-brandDark">Minuman Segar Beragam</h3>
+                            <p class="text-sm text-gray-600">Nikmati Tea Series, Milk Series hingga Matcha & Coffee Latte yang pas di kantong.</p>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-brandCream border border-yellow-900/10 text-center space-y-3">
+                            <div class="w-12 h-12 bg-brandRed/10 text-brandRed rounded-xl flex items-center justify-center text-2xl mx-auto font-bold">📍</div>
+                            <h3 class="font-bold text-lg text-brandDark">Lokasi Strategis</h3>
+                            <p class="text-sm text-gray-600">Mudah dijangkau di Lumajang. Pas buat nongkrong atau take away harian kamu.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW 2: MENU ==================== -->
+        <section id="view-menu" class="page-view hidden py-10 fade-in">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Header Menu -->
+                <div class="text-center max-w-2xl mx-auto mb-8 space-y-2">
+                    <h2 class="text-3xl font-black text-brandDark">Daftar Menu TEHGA!</h2>
+                    <p class="text-gray-600 text-sm">Pilih menu favoritmu, dari yang menyegarkan hingga cemilan gurih berkualitas.</p>
+                </div>
+
+                <!-- Search & Filter Controls -->
+                <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 mb-8 space-y-4">
+                    <!-- Search Input -->
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="search-input" placeholder="Cari nama menu atau minuman..." class="w-full pl-11 pr-4 py-3 bg-brandCream border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brandRed transition">
+                    </div>
+
+                    <!-- Filter Category Buttons -->
+                    <div class="flex flex-wrap gap-2 justify-center sm:justify-start" id="category-filters">
+                        <!-- Dynamic Buttons inserted by JS -->
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Product Cards dynamic rendered -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300 my-6">
+                    <div class="text-5xl mb-3">🔍</div>
+                    <h3 class="text-lg font-bold text-brandDark">Menu Tidak Ditemukan</h3>
+                    <p class="text-sm text-gray-500">Coba ubah kata kunci pencarian atau pilih kategori lain.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW 3: DETAIL PRODUK (Modal / View) ==================== -->
+        <section id="view-detail" class="page-view hidden py-12 fade-in">
+            <div class="max-w-2xl mx-auto px-4">
+                <button onclick="navigateTo('menu')" class="inline-flex items-center gap-2 text-brandRed font-bold hover:underline mb-6 text-sm">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu
+                </button>
+
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-100 space-y-6 relative overflow-hidden">
+                    <!-- Top Ribbon Decor -->
+                    <div class="absolute top-0 left-0 right-0 h-3 bg-brandRed"></div>
+
+                    <div class="flex justify-between items-start gap-4 pt-2">
+                        <div>
+                            <span id="detail-category" class="inline-block px-3 py-1 bg-brandYellow/20 text-brandDark font-bold text-xs rounded-lg mb-2">
+                                Kategori
+                            </span>
+                            <h2 id="detail-name" class="text-2xl sm:text-3xl font-black text-brandDark">Nama Produk</h2>
+                        </div>
+                        <span id="detail-status" class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                            Tersedia
+                        </span>
+                    </div>
+
+                    <div class="bg-brandCream p-4 rounded-2xl border border-yellow-900/10 flex justify-between items-center">
+                        <span class="text-xs text-gray-500 font-semibold uppercase">Harga Pas</span>
+                        <span id="detail-price" class="text-2xl font-black text-brandRed">Rp 0</span>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">Deskripsi Produk</h4>
+                        <p id="detail-description" class="text-gray-700 leading-relaxed text-sm bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            Deskripsi rinci mengenai rasa dan porsi sajian produk.
+                        </p>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-100 flex gap-4">
+                        <button onclick="navigateTo('menu')" class="w-full bg-brandRed hover:bg-brandRedDark text-white font-bold py-3.5 rounded-xl transition shadow text-center">
+                            Lihat Menu Lainnya
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW 4: PROMO ==================== -->
+        <section id="view-promo" class="page-view hidden py-10 fade-in">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-10 space-y-2">
+                    <h2 class="text-3xl font-black text-brandDark">Promo Spesial TEHGA!</h2>
+                    <p class="text-gray-600 text-sm">Nikmati penawaran hemat dan paket menarik harian dari kami.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Promo Card 1 -->
+                    <div class="bg-brandRed text-white rounded-3xl p-6 shadow-lg relative overflow-hidden flex flex-col justify-between border-2 border-brandYellow">
+                        <div class="space-y-4">
+                            <span class="bg-brandYellow text-brandDark text-xs font-black px-3 py-1 rounded-full uppercase">HOT PROMO</span>
+                            <h3 class="text-2xl font-black leading-tight text-brandCream">Promo Grand Opening</h3>
+                            <p class="text-red-100 text-sm">Sambut hangat kedatangan TEHGA! Dapatkan diskon menarik khusus pembelian langsung di outlet.</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-red-800 flex justify-between items-center">
+                            <span class="text-xs text-brandYellow font-semibold">Berlaku Setiap Hari</span>
+                            <i class="fa-solid fa-gift text-2xl text-brandYellow"></i>
+                        </div>
+                    </div>
+
+                    <!-- Promo Card 2 -->
+                    <div class="bg-white border-2 border-brandRed rounded-3xl p-6 shadow-md flex flex-col justify-between relative">
+                        <div class="space-y-4">
+                            <span class="bg-red-100 text-brandRed text-xs font-black px-3 py-1 rounded-full uppercase">PAKET HEMAT</span>
+                            <h3 class="text-2xl font-black text-brandDark leading-tight">Beli 2 Es Teh <br><span class="text-brandRed">GRATIS 1</span></h3>
+                            <p class="text-gray-600 text-sm">Beli 2 varian Tea Series ukuran apa saja dan dapatkan 1 Original Tea secara gratis!</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center">
+                            <span class="text-xs text-gray-500 font-semibold">Khusus Tea Series</span>
+                            <span class="text-2xl">🥤</span>
+                        </div>
+                    </div>
+
+                    <!-- Promo Card 3 -->
+                    <div class="bg-brandYellow text-brandDark rounded-3xl p-6 shadow-md flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <span class="bg-brandRed text-white text-xs font-black px-3 py-1 rounded-full uppercase">KOMBO KENYANG</span>
+                            <h3 class="text-2xl font-black leading-tight">Beli 1 Dimsum Isi 6 <br><span class="text-brandRed">GRATIS 1 Es Teh</span></h3>
+                            <p class="text-brandDark/80 text-sm">Pesan porsi dimsum isi 6 varian favoritmu dan bawa pulang 1 porsi Original Tea segar.</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-yellow-600/30 flex justify-between items-center">
+                            <span class="text-xs font-bold">Hemat & Mengenyangkan</span>
+                            <span class="text-2xl">🥟</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW 5: TENTANG ==================== -->
+        <section id="view-about" class="page-view hidden py-10 fade-in">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="bg-brandRed p-8 text-white text-center space-y-2">
+                        <h2 class="text-3xl font-black text-brandCream">Tentang TEHGA!</h2>
+                        <p class="text-red-100 text-sm">Teman Segar dan Dimsum Pilihan Warga Lumajang</p>
+                    </div>
+
+                    <div class="p-6 sm:p-10 space-y-8">
+                        <p class="text-center text-gray-700 text-base leading-relaxed">
+                            «"TEHGA! adalah UMKM yang menyediakan berbagai pilihan dimsum dan minuman dengan harga terjangkau dan rasa yang cocok untuk menemani aktivitas sehari-hari."»
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                            <!-- Info Box 1 -->
+                            <div class="bg-brandCream p-5 rounded-2xl border border-yellow-900/10 flex gap-4 items-start">
+                                <div class="w-10 h-10 bg-brandRed text-white rounded-xl flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-brandDark text-sm">Lokasi Outlet</h4>
+                                    <p class="text-xs text-gray-600 mt-1 leading-relaxed">
+                                        Jl. Yos Sudarso, Depan Gg. Mangun, Timur SDK
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Info Box 2 -->
+                            <div class="bg-brandCream p-5 rounded-2xl border border-yellow-900/10 flex gap-4 items-start">
+                                <div class="w-10 h-10 bg-brandYellow text-brandDark rounded-xl flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-brandDark text-sm">Jam Operasional</h4>
+                                    <p class="text-xs text-gray-600 mt-1 leading-relaxed">
+                                        Setiap Hari: 12.00 – 21.00 WIB
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Direct Social Buttons -->
+                        <div class="pt-6 border-t border-gray-100 space-y-3">
+                            <h4 class="text-center text-xs font-bold uppercase tracking-wider text-gray-400">Hubungi & Ikuti Kami</h4>
+                            <div class="flex flex-wrap gap-3 justify-center">
+                                <a href="https://wa.me/6281332685997" target="_blank" class="bg-green-600 hover:bg-green-700 text-white font-bold px-5 py-3 rounded-xl transition text-sm flex items-center gap-2 shadow">
+                                    <i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp (081332685997)
+                                </a>
+                                <a href="https://instagram.com/tehga.lmj" target="_blank" class="bg-pink-600 hover:bg-pink-700 text-white font-bold px-5 py-3 rounded-xl transition text-sm flex items-center gap-2 shadow">
+                                    <i class="fa-brands fa-instagram text-lg"></i> Instagram (@tehga.lmj)
+                                </a>
+                                <a href="https://tiktok.com/@tehga.lmj" target="_blank" class="bg-black hover:bg-gray-800 text-white font-bold px-5 py-3 rounded-xl transition text-sm flex items-center gap-2 shadow">
+                                    <i class="fa-brands fa-tiktok text-lg"></i> TikTok (@tehga.lmj)
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW 6: ADMIN ==================== -->
+        <section id="view-admin" class="page-view hidden py-10 fade-in">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                    <div>
+                        <h2 class="text-3xl font-black text-brandDark">Panel Pengelola Menu</h2>
+                        <p class="text-xs text-gray-500">Kelola daftar produk, harga, deskripsi, dan status ketersediaan secara langsung.</p>
+                    </div>
+                    <button onclick="resetDefaultData()" class="bg-gray-200 hover:bg-gray-300 text-brandDark text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-left"></i> Reset Menu Default
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Form Admin (Tambah / Edit) -->
+                    <div class="lg:col-span-5">
+                        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 sticky top-28 space-y-4">
+                            <div class="flex justify-between items-center border-b pb-3">
+                                <h3 id="form-title" class="font-bold text-lg text-brandDark">Tambah Produk Baru</h3>
+                                <button type="button" onclick="cancelEdit()" id="btn-cancel" class="hidden text-xs text-red-600 font-bold hover:underline">
+                                    Batal Edit
+                                </button>
+                            </div>
+
+                            <form id="admin-form" class="space-y-4">
+                                <input type="hidden" id="product-id">
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Nama Produk</label>
+                                    <input type="text" id="form-name" required placeholder="Contoh: Dimsum Saus Tartar" class="w-full px-3.5 py-2.5 bg-brandCream border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brandRed">
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Harga (Teks/Angka)</label>
+                                        <input type="text" id="form-price" required placeholder="Rp10.000 / Rp15.000" class="w-full px-3.5 py-2.5 bg-brandCream border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brandRed">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Kategori</label>
+                                        <select id="form-category" required class="w-full px-3.5 py-2.5 bg-brandCream border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brandRed">
+                                            <option value="Dimsum">Dimsum</option>
+                                            <option value="Tea Series">Tea Series</option>
+                                            <option value="Milk Series">Milk Series</option>
+                                            <option value="Matcha & Coffee">Matcha & Coffee</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Status Ketersediaan</label>
+                                    <select id="form-status" required class="w-full px-3.5 py-2.5 bg-brandCream border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brandRed">
+                                        <option value="Tersedia">Tersedia</option>
+                                        <option value="Habis">Habis / Kosong</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Deskripsi Singkat</label>
+                                    <textarea id="form-description" rows="3" required placeholder="Jelaskan rasa atau porsi sajian..." class="w-full px-3.5 py-2.5 bg-brandCream border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brandRed"></textarea>
+                                </div>
+
+                                <button type="submit" id="btn-submit" class="w-full bg-brandYellow hover:bg-brandYellowHover text-brandDark font-extrabold py-3 rounded-xl transition shadow">
+                                    <i class="fa-solid fa-plus mr-1"></i> Tambah Produk
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- List Produk Admin -->
+                    <div class="lg:col-span-7">
+                        <div class="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
+                                <span class="font-bold text-sm text-brandDark">Daftar Menu Saat Ini</span>
+                                <span id="admin-count" class="text-xs bg-brandRed text-white px-2.5 py-1 rounded-full font-bold">0 Produk</span>
+                            </div>
+
+                            <div class="divide-y divide-gray-100 max-h-[600px] overflow-y-auto" id="admin-product-list">
+                                <!-- Dynamic List Admin rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-brandRedDark text-white border-t border-red-950 mt-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Col 1 -->
+                <div class="space-y-3 md:col-span-1">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-brandYellow text-brandRed rounded-lg flex items-center justify-center font-extrabold text-sm">T!</div>
+                        <span class="text-xl font-black tracking-wider text-brandCream">TEHGA!</span>
+                    </div>
+                    <p class="text-xs text-red-200 italic">"Teman rasa, teman cerita."</p>
+                    <p class="text-xs text-red-300 leading-relaxed">Sajian minuman manis beraroma dan dimsum gurih pilihan terbaik untuk menemani harimu.</p>
+                </div>
+
+                <!-- Col 2 -->
+                <div>
+                    <h4 class="font-bold text-sm text-brandYellow mb-3">Navigasi</h4>
+                    <ul class="space-y-2 text-xs text-red-200">
+                        <li><button onclick="navigateTo('home')" class="hover:text-brandYellow">Beranda</button></li>
+                        <li><button onclick="navigateTo('menu')" class="hover:text-brandYellow">Daftar Menu</button></li>
+                        <li><button onclick="navigateTo('promo')" class="hover:text-brandYellow">Promo Spesial</button></li>
+                        <li><button onclick="navigateTo('about')" class="hover:text-brandYellow">Tentang Outlet</button></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3 -->
+                <div>
+                    <h4 class="font-bold text-sm text-brandYellow mb-3">Info Outlet</h4>
+                    <ul class="space-y-2 text-xs text-red-200">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-location-dot mt-0.5 text-brandYellow"></i>
+                            <span>Jl. Yos Sudarso, Depan Gg. Mangun, Timur SDK</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-brandYellow"></i>
+                            <span>12.00 – 21.00 WIB</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Col 4 -->
+                <div>
+                    <h4 class="font-bold text-sm text-brandYellow mb-3">Sosial Media</h4>
+                    <div class="flex gap-3">
+                        <a href="https://wa.me/6281332685997" target="_blank" class="w-9 h-9 bg-brandRed rounded-xl flex items-center justify-center hover:bg-brandYellow hover:text-brandDark transition text-sm">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="https://instagram.com/tehga.lmj" target="_blank" class="w-9 h-9 bg-brandRed rounded-xl flex items-center justify-center hover:bg-brandYellow hover:text-brandDark transition text-sm">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="https://tiktok.com/@tehga.lmj" target="_blank" class="w-9 h-9 bg-brandRed rounded-xl flex items-center justify-center hover:bg-brandYellow hover:text-brandDark transition text-sm">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-red-900 mt-10 pt-6 text-center text-xs text-red-300">
+                &copy; 2026 <span class="font-bold text-brandYellow">TEHGA!</span>. All rights reserved. Made for UMKM Indonesia.
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Default Data Menu
+        const initialProducts = [
+            // DIMSUM
+            { id: '1', name: 'Dimsum Original', price: 'Rp10.000 / Rp15.000', category: 'Dimsum', description: 'Dimsum olahan daging ayam lembut dengan rasa original yang lezat dan gurih.', status: 'Tersedia' },
+            { id: '2', name: 'Dimsum Saus Mentai', price: 'Rp10.000 / Rp15.000', category: 'Dimsum', description: 'Dimsum lembut dipadukan dengan siraman saus mentai gurih beraroma smoky.', status: 'Tersedia' },
+            { id: '3', name: 'Dimsum Saus Tartar', price: 'Rp10.000 / Rp15.000', category: 'Dimsum', description: 'Dimsum dengan saus tartar yang creamy dan sedikit asam segar memanjakan lidah.', status: 'Tersedia' },
+            { id: '4', name: 'Mozza', price: 'Rp5.000', category: 'Dimsum', description: 'Ekstra keju mozzarella lumer sebagai topping melimpah dimsum.', status: 'Tersedia' },
+            { id: '5', name: 'Slice', price: 'Rp3.000', category: 'Dimsum', description: 'Topping keju slice gurih tambahan untuk melengkapi sajian dimsum.', status: 'Tersedia' },
+
+            // TEA SERIES
+            { id: '6', name: 'Original Tea', price: 'Rp3.000', category: 'Tea Series', description: 'Seduhan teh melati racikan khas TEHGA! yang manis, dingin, dan menyegarkan.', status: 'Tersedia' },
+            { id: '7', name: 'Lemon Tea', price: 'Rp3.000', category: 'Tea Series', description: 'Kombinasi teh melati segar dengan perasan ekstrak buah lemon alami.', status: 'Tersedia' },
+            { id: '8', name: 'Lychee Tea', price: 'Rp5.000', category: 'Tea Series', description: 'Teh harum dengan manis manis buah leci yang menyenangkan.', status: 'Tersedia' },
+            { id: '9', name: 'Blackcurrant Tea', price: 'Rp5.000', category: 'Tea Series', description: 'Teh rasa blackcurrant dengan sensasi asam manis nikmat.', status: 'Tersedia' },
+            { id: '10', name: 'Mango Tea', price: 'Rp5.000', category: 'Tea Series', description: 'Kesegaran teh yang berpadu sempurna dengan aroma mangga manis.', status: 'Tersedia' },
+            { id: '11', name: 'Apple Tea', price: 'Rp5.000', category: 'Tea Series', description: 'Minuman teh rasa apel segar yang ramah di tenggorokan.', status: 'Tersedia' },
+            { id: '12', name: 'Grape Tea', price: 'Rp5.000', category: 'Tea Series', description: 'Teh beraroma buah anggur manis yang pas diminum siang hari.', status: 'Tersedia' },
+            { id: '13', name: 'Milk Tea', price: 'Rp5.000', category: 'Tea Series', description: 'Pepaduan manis khas teh dan kelembutan susu pilihan.', status: 'Tersedia' },
+            { id: '14', name: 'Yakult Tea', price: 'Rp7.000', category: 'Tea Series', description: 'Perpaduan teh segar dan Yakult manis asam pencernaan sehat.', status: 'Tersedia' },
+
+            // MILK SERIES
+            { id: '15', name: 'Lychee Milk', price: 'Rp6.000', category: 'Milk Series', description: 'Susu segar rasa leci nan creamy dan melegakan.', status: 'Tersedia' },
+            { id: '16', name: 'Lemon Milk', price: 'Rp6.000', category: 'Milk Series', description: 'Susu lembut dengan aroma kesegaran lemon yang unik.', status: 'Tersedia' },
+            { id: '17', name: 'Mango Milk', price: 'Rp6.000', category: 'Milk Series', description: 'Minuman susu kaya rasa buah mangga manis gurih.', status: 'Tersedia' },
+            { id: '18', name: 'Apple Milk', price: 'Rp6.000', category: 'Milk Series', description: 'Perpaduan susu manis dan rasa buah apel yang nikmat.', status: 'Tersedia' },
+            { id: '19', name: 'Grape Milk', price: 'Rp6.000', category: 'Milk Series', description: 'Susu segar dengan cita rasa buah anggur manis khas.', status: 'Tersedia' },
+            { id: '20', name: 'Blackcurrant Milk', price: 'Rp6.000', category: 'Milk Series', description: 'Susu nikmat bertema buah blackcurrant yang manis memanjakan.', status: 'Tersedia' },
+            { id: '21', name: 'Strawberry Milk', price: 'Rp6.000', category: 'Milk Series', description: 'Susu segar warna merah muda rasa stroberi manis favorit.', status: 'Tersedia' },
+            { id: '22', name: 'Chocolate Milk', price: 'Rp6.000', category: 'Milk Series', description: 'Susu cokelat pekat dan manis khas penyemangat harimu.', status: 'Tersedia' },
+
+            // MATCHA & COFFEE SERIES
+            { id: '23', name: 'Coffee Latte', price: 'Rp9.000', category: 'Matcha & Coffee', description: 'Perpaduan seduhan kopi mantap dan susu creamy gurih.', status: 'Tersedia' },
+            { id: '24', name: 'Butterscotch Coffee Latte', price: 'Rp12.000', category: 'Matcha & Coffee', description: 'Kopi latte kaya aroma karamel butterscotch yang lezat.', status: 'Tersedia' },
+            { id: '25', name: 'Dalgona Coffee Latte', price: 'Rp12.000', category: 'Matcha & Coffee', description: 'Kopi latte dengan topping foam dalgona manis melimpah.', status: 'Tersedia' },
+            { id: '26', name: 'Matcha Latte', price: 'Rp9.000', category: 'Matcha & Coffee', description: 'Bubuk matcha berkualitas dipadu susu hangat/dingin creamy.', status: 'Tersedia' },
+            { id: '27', name: 'Strawberry Matcha Latte', price: 'Rp12.000', category: 'Matcha & Coffee', description: 'Kombinasi layer stroberi manis dan matcha khas yang estetik.', status: 'Tersedia' },
+            { id: '28', name: 'Coffee Matcha Latte', price: 'Rp12.000', category: 'Matcha & Coffee', description: 'Perpaduan unik rasa kopi, harum matcha, dan susu manis.', status: 'Tersedia' }
+        ];
+
+        // State Management
+        let products = [];
+        let currentCategory = 'Semua';
+        let searchQuery = '';
+
+        // Category List
+        const categories = ['Semua', 'Dimsum', 'Tea Series', 'Milk Series', 'Matcha & Coffee'];
+
+        // Elements
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const searchInput = document.getElementById('search-input');
+        const categoryFilters = document.getElementById('category-filters');
+        const productGrid = document.getElementById('product-grid');
+        const emptyState = document.getElementById('empty-state');
+        const adminForm = document.getElementById('admin-form');
+
+        // Init App
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+            renderCategoryButtons();
+            renderProducts();
+            renderAdminProducts();
+            setupMobileMenu();
+            setupSearch();
+            setupForm();
+        });
+
+        // LocalStorage Loader
+        function loadProducts() {
+            const saved = localStorage.getItem('tehga_products');
+            if (saved) {
+                try {
+                    products = JSON.parse(saved);
+                } catch (e) {
+                    products = [...initialProducts];
+                }
+            } else {
+                products = [...initialProducts];
+                saveProducts();
+            }
+        }
+
+        function saveProducts() {
+            localStorage.setItem('tehga_products', JSON.stringify(products));
+        }
+
+        function resetDefaultData() {
+            if (confirm('Apakah Anda yakin ingin mengembalikan daftar menu awal pabrik? Perubahan kustom akan terhapus.')) {
+                products = [...initialProducts];
+                saveProducts();
+                renderProducts();
+                renderAdminProducts();
+                showToast('Daftar menu berhasil di-reset!');
+            }
+        }
+
+        // SPA Navigation Logic
+        function navigateTo(viewId) {
+            document.querySelectorAll('.page-view').forEach(view => {
+                view.classList.add('hidden');
+            });
+
+            const targetView = document.getElementById(`view-${viewId}`);
+            if (targetView) {
+                targetView.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Update Nav States
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active-nav');
+            });
+            const activeBtn = document.getElementById(`nav-${viewId}`);
+            if (activeBtn) activeBtn.classList.add('active-nav');
+
+            // Close Mobile Menu
+            mobileMenu.classList.add('hidden');
+        }
+
+        function setupMobileMenu() {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Category Filter Buttons Dynamic Render
+        function renderCategoryButtons() {
+            categoryFilters.innerHTML = categories.map(cat => `
+                <button 
+                    onclick="setCategory('${cat}')" 
+                    class="px-4 py-2 rounded-xl text-xs font-bold transition border ${currentCategory === cat ? 'bg-brandRed text-white border-brandRed shadow' : 'bg-brandCream text-brandDark border-gray-200 hover:border-brandRed'}"
+                >
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            renderCategoryButtons();
+            renderProducts();
+        }
+
+        function setupSearch() {
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                renderProducts();
+            });
+        }
+
+        // Get Category Emoji / Badge Decor
+        function getCategoryIcon(cat) {
+            switch(cat) {
+                case 'Dimsum': return '🥟';
+                case 'Tea Series': return '🥤';
+                case 'Milk Series': return '🥛';
+                case 'Matcha & Coffee': return '☕';
+                default: return '✨';
+            }
+        }
+
+        // Render Menu Cards for Customers
+        function renderProducts() {
+            const filtered = products.filter(p => {
+                const matchCategory = currentCategory === 'Semua' || p.category === currentCategory;
+                const matchSearch = p.name.toLowerCase().includes(searchQuery) || p.description.toLowerCase().includes(searchQuery);
+                return matchCategory && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                productGrid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            productGrid.innerHTML = filtered.map(p => `
+                <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4 group relative overflow-hidden">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-start gap-2">
+                            <span class="text-xs font-bold text-brandRed bg-brandRed/5 px-2.5 py-1 rounded-lg">
+                                ${getCategoryIcon(p.category)} ${p.category}
+                            </span>
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${p.status === 'Tersedia' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}">
+                                ${p.status}
+                            </span>
+                        </div>
+                        
+                        <h3 class="text-lg font-bold text-brandDark group-hover:text-brandRed transition">${p.name}</h3>
+                        <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed">${p.description}</p>
+                    </div>
+
+                    <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-gray-400 block font-semibold uppercase">Harga</span>
+                            <span class="text-base font-extrabold text-brandRed">${p.price}</span>
+                        </div>
+                        <button onclick="showDetail('${p.id}')" class="bg-brandYellow hover:bg-brandYellowHover text-brandDark font-bold px-3.5 py-2 rounded-xl text-xs transition flex items-center gap-1 shadow-sm">
+                            Detail <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Detail View Logic
+        function showDetail(productId) {
+            const p = products.find(prod => prod.id === productId);
+            if (!p) return;
+
+            document.getElementById('detail-name').innerText = p.name;
+            document.getElementById('detail-price').innerText = p.price;
+            document.getElementById('detail-category').innerText = `${getCategoryIcon(p.category)} ${p.category}`;
+            document.getElementById('detail-description').innerText = p.description;
+            
+            const statusBadge = document.getElementById('detail-status');
+            statusBadge.innerText = p.status;
+            if (p.status === 'Tersedia') {
+                statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700';
+            } else {
+                statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-600';
+            }
+
+            navigateTo('detail');
+        }
+
+        // ==================== ADMIN LOGIC ====================
+        function renderAdminProducts() {
+            const listContainer = document.getElementById('admin-product-list');
+            const countBadge = document.getElementById('admin-count');
+            
+            countBadge.innerText = `${products.length} Produk`;
+
+            if (products.length === 0) {
+                listContainer.innerHTML = `<div class="p-8 text-center text-xs text-gray-400">Belum ada produk terdaftar.</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = products.map(p => `
+                <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-gray-50 transition">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-bold text-sm text-brandDark">${p.name}</h4>
+                            <span class="text-[10px] px-2 py-0.5 rounded font-semibold ${p.status === 'Tersedia' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}">
+                                ${p.status}
+                            </span>
+                        </div>
+                        <p class="text-xs text-brandRed font-bold">${p.price} <span class="text-gray-400 font-normal">| ${p.category}</span></p>
+                        <p class="text-xs text-gray-500 line-clamp-1">${p.description}</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="editProduct('${p.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                        </button>
+                        <button onclick="deleteProduct('${p.id}')" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1">
+                            <i class="fa-solid fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupForm() {
+            adminForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const id = document.getElementById('product-id').value;
+                const name = document.getElementById('form-name').value.trim();
+                const price = document.getElementById('form-price').value.trim();
+                const category = document.getElementById('form-category').value;
+                const status = document.getElementById('form-status').value;
+                const description = document.getElementById('form-description').value.trim();
+
+                if (id) {
+                    // Update Product
+                    const index = products.findIndex(p => p.id === id);
+                    if (index !== -1) {
+                        products[index] = { id, name, price, category, status, description };
+                        showToast('Produk berhasil diperbarui!');
+                    }
+                } else {
+                    // Add New Product
+                    const newProduct = {
+                        id: Date.now().toString(),
+                        name,
+                        price,
+                        category,
+                        status,
+                        description
+                    };
+                    products.unshift(newProduct);
+                    showToast('Produk baru berhasil ditambahkan!');
+                }
+
+                saveProducts();
+                renderProducts();
+                renderAdminProducts();
+                cancelEdit();
+            });
+        }
+
+        function editProduct(id) {
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            document.getElementById('product-id').value = p.id;
+            document.getElementById('form-name').value = p.name;
+            document.getElementById('form-price').value = p.price;
+            document.getElementById('form-category').value = p.category;
+            document.getElementById('form-status').value = p.status;
+            document.getElementById('form-description').value = p.description;
+
+            document.getElementById('form-title').innerText = 'Edit Data Produk';
+            document.getElementById('btn-submit').innerHTML = `<i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Perubahan`;
+            document.getElementById('btn-cancel').classList.remove('hidden');
+
+            window.scrollTo({ top: document.getElementById('admin-form').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            adminForm.reset();
+            document.getElementById('product-id').value = '';
+            document.getElementById('form-title').innerText = 'Tambah Produk Baru';
+            document.getElementById('btn-submit').innerHTML = `<i class="fa-solid fa-plus mr-1"></i> Tambah Produk`;
+            document.getElementById('btn-cancel').classList.add('hidden');
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus produk ini dari daftar menu?')) {
+                products = products.filter(p => p.id !== id);
+                saveProducts();
+                renderProducts();
+                renderAdminProducts();
+                showToast('Produk telah dihapus.');
+            }
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.innerText = msg;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
